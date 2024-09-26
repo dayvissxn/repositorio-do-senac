@@ -135,26 +135,10 @@ Lista ordenada:
 <ol>: Cria uma lista ordenada (numerada).
 <li>: Item de lista.
 
-Exemplo:
-html
-
-<ol>
-  <li>Primeiro item</li>
-  <li>Segundo item</li>
-</ol>
-
 Lista não ordenada:
 
 <ul>: Cria uma lista não ordenada (com marcadores).
 <li>: Item de lista.
-
-Exemplo:
-html
-
-<ul>
-  <li>Item A</li>
-  <li>Item B</li>
-</ul>
 
 
 6. Tabelas
@@ -163,21 +147,6 @@ html
 <th>: Define uma célula de cabeçalho (em negrito e centralizada).
 <td>: Define uma célula normal.
 <caption>: Adiciona um título à tabela.
-
-Exemplo:
-html
-
-<table>
-  <caption>Tabela Exemplo</caption>
-  <tr>
-    <th>Cabeçalho 1</th>
-    <th>Cabeçalho 2</th>
-  </tr>
-  <tr>
-    <td>Dados 1</td>
-    <td>Dados 2</td>
-  </tr>
-</table>
 
 
 7. Formulários
@@ -194,15 +163,6 @@ checkbox: Caixa de seleção.
 <textarea>: Área de texto multilinhas.
 <button>: Botão clicável.
 <label>: Rótulo para os campos de formulário.
-
-Exemplo:
-html
-
-<form action="/submit" method="POST">
-  <label for="nome">Nome:</label>
-  <input type="text" id="nome" name="nome">
-  <button type="submit">Enviar</button>
-</form>
 
 
 8. Outras Tags Úteis
