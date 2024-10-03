@@ -1,0 +1,13 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body {
+   
+    min-height: 100vh;
+    background: linear-gradient(to right, #830cc4, #a63ae6, #d58cfc);
+}
+
+img{
+    height: 100px;
+}

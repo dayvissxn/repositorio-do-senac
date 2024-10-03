@@ -1,0 +1,26 @@
+/* Definir a cor de fundo para toda a pagina e a fonte que sera utilizada */
+body{
+    background-color: #f4f4f4; /* Cor de fundo */
+    font-family: Arial, sans-serif; /* Definir as fontes */
+    margin: 0px;
+    padding: 0;
+}
+
+/* Estilização do cabeçalho principal */
+h1{
+    text-align: center; /* Alinhamento do texto */
+    padding: 20px; /* Adiciona um espaçamento ao redor do texto */
+    background-color: #4CAF50; /* Cor do fundo */
+    color: white;
+}
+
+h2, h3{
+    color: #459a48;
+    margin-left: 20px;
+}
+
+p{
+    color: #005b03;
+    line-height: 1.6;
+    margin: 20px;
+}

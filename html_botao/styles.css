@@ -1,0 +1,23 @@
+*{
+    font-family: "Lucida Handwriting", cursive;
+      
+}
+#primeiroBotao{
+    background-color: #1a1a1a;
+    color: greenyellow;
+    padding: 15px 30px;
+    text-align: center;
+    font-size: 16px;
+    border: 12px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+    
+
+}
+
+/* Estilização ao passar o mouse sobre o botão */
+#primeiroBotao:hover{
+    background-color: purple;
+}
