@@ -1,14 +1,81 @@
 <?php
-    session_start();
+session_start();
 
-    if((!isset($_SESSION['id']) == true) and (!isset($_SESSION['nome_completo']) == true))
-    {
-        unset($_SESSION['id']);
-        unset($_SESSION['nome_completo']);
-        header("Location: ../login/login.php");
+// Verifica se o usuário está logado e se as variáveis de sessão estão definidas
+if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['nome_completo'])) {
+    header("Location: ../login/login.php");
+    exit();
+}
+
+$id_usuario = $_SESSION['id_usuario'];
+$nome_completo = $_SESSION['nome_completo'];
+$cpf = isset($_SESSION['cpf']) ? $_SESSION['cpf'] : '';  // Fallback para uma string vazia se não estiver definido
+$telefone = isset($_SESSION['telefone']) ? $_SESSION['telefone'] : '';
+$data_nascimento = isset($_SESSION['data_nascimento']) ? $_SESSION['data_nascimento'] : '';
+$genero = isset($_SESSION['genero']) ? $_SESSION['genero'] : '';
+$email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
+$experiencia_antecessora = isset($_SESSION['experiencia_antecessora']) ? $_SESSION['experiencia_antecessora'] : '';
+$caminho_curriculo = isset($_SESSION['caminho_curriculo']) ? $_SESSION['caminho_curriculo'] : '';
+$caminho_fotoperfil = isset($_SESSION['caminho_fotoperfil']) ? $_SESSION['caminho_fotoperfil'] : '';
+
+// Conectar ao banco de dados
+$conn = mysqli_connect("localhost", "root", "12345", "projeto_site");
+if (!$conn) {
+    die("Erro ao conectar ao banco de dados: " . mysqli_connect_error());
+}
+
+// Verifica se o ID da vaga está definido
+if (isset($_GET['id_vaga'])) {
+    $id_vaga = $_GET['id_vaga'];
+
+    // Gerar o nome da tabela da vaga
+    $sql_get_nome_vaga = "SELECT nome FROM vagas WHERE id = $id_vaga";
+    $result_nome_vaga = $conn->query($sql_get_nome_vaga);
+    $row_vaga = $result_nome_vaga->fetch_assoc();
+    $nome_vaga = $row_vaga['nome'];
+
+    // Criar nome da tabela
+    $nome_tabela = "vaga_" . $id_vaga . "_" . preg_replace('/[^a-zA-Z0-9_]/', '', str_replace(' ', '_', $nome_vaga));
+
+    // Verifica se a tabela da vaga já existe
+    $sql_check_table = "CREATE TABLE IF NOT EXISTS $nome_tabela (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        id_usuario INT NOT NULL,
+        nome_completo VARCHAR(100) NOT NULL,
+        cpf VARCHAR(14) NOT NULL,
+        telefone VARCHAR(15) NOT NULL,
+        data_nascimento TEXT NOT NULL,
+        genero VARCHAR(10) NOT NULL,
+        caminho_curriculo VARCHAR(255) DEFAULT NULL,
+        caminho_fotoperfil VARCHAR(255) DEFAULT NULL,
+        experiencia_antecessora TEXT NOT NULL,
+        email VARCHAR(100) DEFAULT NULL,
+        CONSTRAINT fk_usuario_$id_vaga FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE
+    )";
+
+    // Executa a criação da tabela
+    if ($conn->query($sql_check_table) !== TRUE) {
+        die("Erro ao criar tabela: " . $conn->error);
     }
-    $logado = $_SESSION['nome_completo'];
+
+    // Verifica se o usuário já está inscrito na vaga
+    $sql_check_inscrito = "SELECT * FROM $nome_tabela WHERE id_usuario = '$id_usuario'";
+    $result_inscrito = $conn->query($sql_check_inscrito);
+
+    if ($result_inscrito->num_rows > 0) {
+        echo "<button type='button' class='inscrito' disabled>Inscrito</button>";
+    } else {
+        echo "<form action='li_candidatar.php' method='POST'>";
+        echo "<input type='hidden' name='id_vaga' value='$id_vaga'>";
+        echo "<button type='submit' class='candidatar'>Candidatar-se a vaga</button>";
+        echo "</form>";
+    }
+}
+
+$conn->close();
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -777,7 +844,7 @@ a {
             </button>
             <div class="dropdown-content">
                 <a href="../change_personal_data/alterar_dados_pessoais.php"><i class="fa-solid fa-user"></i> Perfil</a>
-                <a href="#"><i class="fa-solid fa-circle-check"></i> Minhas vagas</a>
+                <a href="../my_vacancies/minhas_vagas.php"><i class="fa-solid fa-circle-check"></i> Minhas vagas</a>
                 <a href="../create_vacancy/criar_vaga.html"><i class="fa-solid fa-cog"></i> Configurações</a>
                 <a href="../home_page/inicio.php"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
             </div>
@@ -853,7 +920,10 @@ a {
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
                         echo "<div class='white-box'>";
-                            echo "<form action='av_edit.php' method='GET'>";
+                            echo "<form action='li_candidatar.php' method='POST'>";
+                                echo "<input type='hidden' name='id_vaga' value='" . $row["id"] . "'>";
+                                echo "<input type='hidden' name='id_usuario' value='" . $id_usuario . "'>";
+
                                 echo "<div class='nome_empresa'>";
                                     echo "<div class='nome'>";
                                         echo "<input type='text' id='nome_" . $row["id"] . "' name='nome' value='" . $row["nome"] . "' readonly>";
@@ -899,7 +969,7 @@ a {
   
                                 echo "<div class='botao_candidatar'>";
                                         echo "<input type='hidden' name='id' value='" . $row["id"] . "'>";
-                                        echo "<button type='submit' class='candidatar'>Candidatar-se a vaga</button>";  
+                                        echo "<button type='submit' class='candidatar'>Inscrito</button>";  
                                 echo "</div>";   
                             echo "</form>";
                         echo "</div>";          

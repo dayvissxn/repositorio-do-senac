@@ -25,9 +25,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     session_start();
                 }
 
-                $_SESSION['id'] = $usuario['id'];
-                $_SESSION['usuario_id'] = $usuario['usuario_id'];
+                $_SESSION['id_usuario'] = $usuario['id'];
                 $_SESSION['nome_completo'] = $usuario['nome_completo'];
+                $_SESSION['cpf'] = $usuario['cpf'];
+                $_SESSION['telefone'] = $usuario['telefone'];
+                $_SESSION['data_nascimento'] = $usuario['data_nascimento'];
+                $_SESSION['genero'] = $usuario['genero'];
+                $_SESSION['email'] = $usuario['email'];
+                $_SESSION['experiencia_antecessora'] = $usuario['experiencia_antecessora'];
+                $_SESSION['caminho_curriculo'] = $usuario['caminho_curriculo'];
+                $_SESSION['caminho_fotoperfil'] = $usuario['caminho_fotoperfil'];
 
                 header("Location: ../home_loggedin/logged_in.php");
                 exit(); // Certifique-se de que a execução do script pare após o redirecionamento
