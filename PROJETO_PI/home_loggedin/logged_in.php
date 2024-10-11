@@ -969,7 +969,7 @@ a {
   
                                 echo "<div class='botao_candidatar'>";
                                         echo "<input type='hidden' name='id' value='" . $row["id"] . "'>";
-                                        echo "<button type='submit' class='candidatar'>Inscrito</button>";  
+                                        echo "<button type='submit' class='candidatar'>Candidatar-se a vaga</button>";  
                                 echo "</div>";   
                             echo "</form>";
                         echo "</div>";          

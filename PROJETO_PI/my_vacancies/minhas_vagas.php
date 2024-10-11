@@ -317,10 +317,7 @@ if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['cpf'])) {
             margin-top: 5px;
         }
 
-        .inscrito:hover {
-            background-color: #0056b3; /* Cor de fundo dos botões ao passar o mouse */
-            color: #FFE500;
-        }
+        
 
         /* Estilos existentes */
 

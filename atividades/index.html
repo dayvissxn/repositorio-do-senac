@@ -6,11 +6,49 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Antares</h1>
-    <img src="antares.jpg" alt="antares">
+    <div class="foto_titulo">
+        <img id="foto_antares" src="antares.jpg" alt="antares">
+        <h1>Antares</h1>
+    </div>
     <p>Antares é uma estrela supergigante vermelha na constelação de Scorpius. É a 16.ª estrela mais brilhante do céu noturno.</p>
     
+    <table>
+        <tr>
+            <th>Produto/Serviço</th>
+            <th>Preço</th>
+        </tr>
+        <tr>
+            <td>Consultoria para manutenção</td>
+            <td>R$ 50,00</td>
+        </tr>
+        <tr>
+            <td>Formatação de computadores e pendrives: </td>
+            <td>R$ 80,00</td>
+        </tr>
+        <tr>
+            <td>Limpeza e montagem de computadores: </td>
+            <td>R$ 250,00</td>
+        </tr>
+    </table>
+    <button onclick="">Página de contato</button>
 
-     
+
+    <h1 class="formulario">Formulário</h1>
+    <form id="meuFormulario" action="#" method="POST" enctype="multipart/form-data">
+        <div class="campo">
+            <label for="nome">Nome:</label>
+            <input type="text" name="nome" id="nome" required><br><br>
+        </div>
+        <div class="campo">
+            <label for="e-mail">E-mail:</label>
+            <input type="text" name="e-mail" id="e-mail" required><br><br>
+        </div>
+        <div class="campo">
+            <label for="mensagem">Mensagem:</label>
+            <textarea name="mensagem" id="mensagem" rows="5" cols="20"></textarea required><br><br>
+        </div>
+        <button type="submit">Enviar</button>
+    </form>
+
 </body>
 </html>

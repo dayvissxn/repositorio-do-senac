@@ -3,9 +3,8 @@
 <?php
 session_start();
 
-if ((!isset($_SESSION['id']) == true) and (!isset($_SESSION['nome_completo']) == true)) {
-    unset($_SESSION['id']);
-    unset($_SESSION['nome_completo']);
+// Verificação correta das variáveis de sessão
+if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['nome_completo'])) {
     header("Location: ../login/login.php");
     exit();
 }
@@ -13,10 +12,9 @@ if ((!isset($_SESSION['id']) == true) and (!isset($_SESSION['nome_completo']) ==
 $logado = $_SESSION['nome_completo'];
 $primeiro_nome = explode(' ', $logado)[0]; // Pega a primeira parte do nome completo
 
-
 include('adp_conexao.php'); // Inclua a conexão com o banco de dados
 
-$id_usuario = $_SESSION['id'];
+$id_usuario = $_SESSION['id_usuario'];
 
 // Query para buscar os dados do usuário no banco de dados
 $sql = "SELECT nome_completo, email, data_nascimento, genero, telefone FROM usuarios WHERE id = '$id_usuario'";
@@ -38,7 +36,6 @@ if ($result && mysqli_num_rows($result) > 0) {
 
 mysqli_close($mysqli);
 ?>
-
 
 <!doctype html>
 <html lang="pt-br">
