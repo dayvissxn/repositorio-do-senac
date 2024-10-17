@@ -27,11 +27,12 @@ if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['cpf'])) {
     <title>Candidatos</title>
 
     <script>
-        function confirmDelete(event) {
-            if (!confirm('Você tem certeza que deseja excluir esta vaga?')) {
-                event.preventDefault();
-            }
+    function confirmarExclusao(botao) {
+        if (confirm("Tem certeza que deseja cancelar sua inscrição na vaga?")) {
+            // Enviar o formulário se o usuário confirmar
+            botao.closest('form').submit();
         }
+    }
     </script>
 
     <style>
@@ -220,7 +221,7 @@ if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['cpf'])) {
         .l_qv_d {
             display: flex;
             width: 100%;
-            margin-top: 15px;
+            margin-top: 30px;
 
         }
 
@@ -288,22 +289,22 @@ if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['cpf'])) {
         .descricao_vaga textarea {
             width: 100%;
             height: 85px;
-            margin-top: 10px;
+            margin-top: 25px;
             resize: none;
             display: block;
             font-size: 15px;
             color: #35383F;
         }
 
-        .botao_inscrito {
+        .botao_cancelar {
             display: flex;
             justify-content: center;
             align-items: center;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 25px;
         }
 
-        .inscrito {
+        .cancelar {
             font-weight: 700;
             width: 100%;
             height: 50px;
@@ -401,9 +402,9 @@ if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['cpf'])) {
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     echo "<div class='white-box'>";
-                        echo "<form>";
+                        echo "<form method='POST' action='mv_delete.php'>";
                             echo "<div class='titulo_id'>";
-                                echo "<label>ID:</label><input type='text' name='id' value='" . $row["id_vaga"] . "' readonly>";
+                                echo "<input type='hidden' name='id' value='" . $row["id_vaga"] . "' readonly>";
                             echo "</div>";
 
                             echo "<div class='nome_empresa'>";
@@ -449,9 +450,9 @@ if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['cpf'])) {
                                 echo "<textarea id='descricao_vaga_" . $row["id_vaga"] . "' name='descricao_vaga' readonly>" . $row["descricao_vaga"] . "</textarea>";
                             echo "</div>";
 
-                            echo "<div class='botao_inscrito'>";
-                                echo "<input type='hidden' name='id' value='" . $row["id_vaga"] . "'>";
-                                echo "<button type='submit' class='inscrito' onclick='return confirm(\'Tem certeza que deseja excluir este usuário?\')'>Inscrito</button>";
+                            echo "<div class='botao_cancelar'>";
+                                echo "<input type='hidden' name='id_vaga' value='" . $row["id_vaga"] . "'>"; // Mudar para 'id_vaga'
+                                echo "<button type='button' class='cancelar' onclick='return confirmarExclusao(this)'>Cancelar inscrição</button>";
                             echo "</div>";
                         echo "</form>";
                     echo "</div>";

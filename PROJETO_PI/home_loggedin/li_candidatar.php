@@ -1,9 +1,10 @@
 <?php
 session_start();
+header('Content-Type: application/json');
 
 // Verifica se o usuário está logado e se as variáveis de sessão estão definidas
 if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['nome_completo'])) {
-    header("Location: ../login/login.php");
+    echo json_encode(['status' => 'error', 'message' => 'Usuário não autenticado.']);
     exit();
 }
 
@@ -21,7 +22,8 @@ $caminho_fotoperfil = isset($_SESSION['caminho_fotoperfil']) ? $_SESSION['caminh
 // Conectar ao banco de dados
 $conn = mysqli_connect("localhost", "root", "12345", "projeto_site");
 if (!$conn) {
-    die("Erro ao conectar ao banco de dados: " . mysqli_connect_error());
+    echo json_encode(['status' => 'error', 'message' => 'Erro ao conectar ao banco de dados: ' . mysqli_connect_error()]);
+    exit();
 }
 
 // Recupera dados do formulário
@@ -54,7 +56,8 @@ $sql_check_table = "CREATE TABLE IF NOT EXISTS $nome_tabela_vaga (
 
 // Executa a criação da tabela da vaga
 if ($conn->query($sql_check_table) !== TRUE) {
-    die("Erro ao criar tabela: " . $conn->error);
+    echo json_encode(['status' => 'error', 'message' => 'Erro ao criar tabela: ' . $conn->error]);
+    exit();
 }
 
 // Verifica se o usuário já está inscrito na vaga
@@ -62,8 +65,7 @@ $sql_check_inscrito = "SELECT * FROM $nome_tabela_vaga WHERE id_usuario = '$id_u
 $result_inscrito = $conn->query($sql_check_inscrito);
 
 if ($result_inscrito->num_rows > 0) {
-    // O usuário já está inscrito
-    echo "<button type='button' class='inscrito' disabled>Inscrito</button>";
+    echo json_encode(['status' => 'error', 'message' => 'Você já está inscrito nesta vaga.']);
 } else {
     // Insere os dados do candidato na tabela da vaga
     $sql_insert_candidato = "INSERT INTO $nome_tabela_vaga (id_usuario, nome_completo, cpf, telefone, data_nascimento, genero, email, experiencia_antecessora, caminho_curriculo, caminho_fotoperfil)
@@ -98,15 +100,15 @@ if ($result_inscrito->num_rows > 0) {
             if ($conn->query($sql_insert_vaga_usuario) === TRUE) {
                 // Define uma variável de sessão para indicar que a inscrição foi bem-sucedida
                 $_SESSION['inscrito_' . $id_vaga] = true;
-                echo "<button type='button' class='inscrito' disabled>Inscrito</button>";
+                echo json_encode(['status' => 'success', 'message' => 'Inscrição realizada com sucesso.']);
             } else {
-                echo "Erro ao candidatar-se: " . $conn->error;
+                echo json_encode(['status' => 'error', 'message' => 'Erro ao inserir os dados da vaga na tabela do usuário: ' . $conn->error]);
             }
         } else {
-            echo "Erro ao criar tabela do usuário: " . $conn->error;
+            echo json_encode(['status' => 'error', 'message' => 'Erro ao criar a tabela do usuário: ' . $conn->error]);
         }
     } else {
-        echo "Erro ao candidatar-se: " . $conn->error;
+        echo json_encode(['status' => 'error', 'message' => 'Erro ao candidatar-se: ' . $conn->error]);
     }
 }
 

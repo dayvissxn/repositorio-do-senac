@@ -243,7 +243,7 @@ body{
                 ?>
                 <input type="text" name="cpf" placeholder="CPF 123.456.789.00" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" title="Formato: 123.456.789-00"/> 
                 <input type="password" name="senha" placeholder="Senha" />
-                <a href="#">Esqueceu sua Senha?</a>
+                <a href="../forgot_password/esqueceu_senha.php">Esqueceu sua Senha?</a>
                 <button type="submit">Entrar</button>
             </form>
         </div>

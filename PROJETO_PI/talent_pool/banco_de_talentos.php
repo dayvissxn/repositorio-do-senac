@@ -19,13 +19,7 @@
 
     <title>Banco de talentos</title>
 
-    <script>
-        function confirmDelete(event) {
-            if (!confirm('Você tem certeza que deseja excluir este usuário?')) {
-                event.preventDefault();
-            }
-        }
-    </script>
+    
 
 <style>
 * {
@@ -384,7 +378,7 @@ Estilos responsivos
                                     <!-- Botão de Excluir -->
                                     <form action="bdt_delete.php" method="POST" style="display:inline;">
                                         <input type="hidden" name="id" value="' . $row['id'] . '">
-                                        <button type="submit" class="excluir" onclick="return confirm(\'Tem certeza que deseja excluir este usuário?\')">Excluir</button>
+                                        <button type="submit" class="excluir" onclick="return confirm(\'Tem certeza de que deseja excluir esta conta? Essa ação não poderá ser desfeita!\')">Excluir</button>
                                     </form>
 
                                     <!-- Botão de Ver -->

@@ -4,6 +4,7 @@
 }
 body {
     padding: 10px;
+    margin: 0 auto;
     min-height: 100vh;
     background: linear-gradient(to right, #830cc4, #a63ae6, #d58cfc);
 }
@@ -47,4 +48,48 @@ tr :nth-child(even){
 th{
     background-color: rgb(173, 15, 147);
     color: rgb(189, 189, 189);
+}
+
+.formulario{
+    margin-top: 20px;
+    font-size: 40px;
+}
+
+
+.tema{
+    margin-top: 20px;
+    font-size: 40px;
+}
+
+blockquote{
+    margin-top: 30px;
+}
+.citacao{
+    font-weight: bold;
+    font-size: 30px;
+    margin-bottom: -20px;
+}
+
+.autor{
+    font-weight: medium;
+
+}
+
+iframe{
+    margin: 20px;
+    border-radius: 10px;
+}
+
+footer {
+    display: flex;
+    width: 100%;
+    letter-spacing: 10px;
+    background-color: #c144c5;
+    color: aliceblue;
+    justify-content: center;
+    padding: 1.3rem;
+    margin-bottom: -37px;
+    
+    bottom:0%;
+
 }

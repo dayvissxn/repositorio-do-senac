@@ -58,18 +58,6 @@ if (isset($_GET['id_vaga'])) {
         die("Erro ao criar tabela: " . $conn->error);
     }
 
-    // Verifica se o usuário já está inscrito na vaga
-    $sql_check_inscrito = "SELECT * FROM $nome_tabela WHERE id_usuario = '$id_usuario'";
-    $result_inscrito = $conn->query($sql_check_inscrito);
-
-    if ($result_inscrito->num_rows > 0) {
-        echo "<button type='button' class='inscrito' disabled>Inscrito</button>";
-    } else {
-        echo "<form action='li_candidatar.php' method='POST'>";
-        echo "<input type='hidden' name='id_vaga' value='$id_vaga'>";
-        echo "<button type='submit' class='candidatar'>Candidatar-se a vaga</button>";
-        echo "</form>";
-    }
 }
 
 $conn->close();
@@ -339,7 +327,8 @@ main {
     border-radius: 15px;
     box-sizing: border-box;
     margin: 0 auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.541);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 
+                0 6px 20px rgba(0, 0, 0, 0.1);
 
 }
 
@@ -507,7 +496,8 @@ i {
 .container_vagas .white-box {
     background-color: #ffffff;
     border-radius: 15px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.541);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 
+                0 6px 20px rgba(0, 0, 0, 0.1);
     width: 500px;
     height: 355px;
     display: flex;
@@ -517,6 +507,11 @@ i {
     padding: 20px; /* Espaço entre o topo do contêiner e o conteúdo */
     margin-top: 30px;
     margin-bottom: 30px;
+    transition: transform 0.3s ease;
+}
+
+.container_vagas .white-box:hover {
+    transform: scale(1.02); /* Aumenta o botão em 10% ao passar o mouse */
 }
 
 input, textarea {
@@ -649,7 +644,7 @@ input, textarea[readonly]:focus {
 
 }
 
-.botao_candidatar button {
+.botao_candidatar .candidatar {
     font-weight: 700;
     width: 100%;
     height: 50px;
@@ -663,9 +658,23 @@ input, textarea[readonly]:focus {
     margin-top: 5px;
 }
 
-.botao_candidatar button:hover {
+.botao_candidatar .candidatar:hover {
     background-color: #0056b3; /* Cor de fundo dos botões ao passar o mouse */
     color: #FFE500;
+}
+
+.botao_candidatar .inscrito {
+    font-weight: 700;
+    width: 100%;
+    height: 50px;
+    font-size: 20px; /* Tamanho da fonte dos botões */
+    background-color: #ffffff; /* Cor de fundo dos botões */
+    color: #003079; /* Cor do texto dos botões */
+    border: 3px solid #003079; /* Remove a borda dos botões */
+    border-radius: 8.89px; /* Borda arredondada dos botões */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.397); /* Adiciona sombra */
+    cursor: pointer;
+    margin-top: 5px;
 }
 @media screen and (max-width: 1029px){
     .container_vagas {
@@ -919,60 +928,73 @@ a {
                 // Verifica e exibe os resultados da pesquisa
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
+                        // Gerar o nome da tabela da vaga
+                        $id_vaga = $row["id"];
+                        $nome_vaga = $row["nome"];
+                        $nome_tabela = "vaga_" . $id_vaga . "_" . preg_replace('/[^a-zA-Z0-9_]/', '', str_replace(' ', '_', $nome_vaga));
+
+                        // Verifica se o usuário já está inscrito na vaga
+                        $sql_check_inscrito = "SELECT * FROM $nome_tabela WHERE id_usuario = '$id_usuario'";
+                        $result_inscrito = $conn->query($sql_check_inscrito);
+
                         echo "<div class='white-box'>";
                             echo "<form action='li_candidatar.php' method='POST'>";
-                                echo "<input type='hidden' name='id_vaga' value='" . $row["id"] . "'>";
+                                echo "<input type='hidden' name='id_vaga' value='" . $id_vaga . "'>";
                                 echo "<input type='hidden' name='id_usuario' value='" . $id_usuario . "'>";
 
                                 echo "<div class='nome_empresa'>";
                                     echo "<div class='nome'>";
-                                        echo "<input type='text' id='nome_" . $row["id"] . "' name='nome' value='" . $row["nome"] . "' readonly>";
+                                        echo "<input type='text' id='nome_" . $id_vaga . "' name='nome' value='" . $row["nome"] . "' readonly>";
                                     echo "</div>";
                                     echo "<div class='empresa'>";
-                                        echo "<input type='text' id='empresa_" . $row["id"] . "' name='empresa' value='" . $row["empresa"] . "' readonly>";
+                                        echo "<input type='text' id='empresa_" . $id_vaga . "' name='empresa' value='" . $row["empresa"] . "' readonly>";
                                     echo "</div>";
                                 echo "</div>";
 
                                 echo "<div class='l_qv_d'>";
                                     echo "<div class='localidade'>";
                                         echo "<i class='fa-solid fa-location-dot'></i>";
-                                        echo "<input type='text' id='localidade_" . $row["id"] . "' name='localidade' value='" . $row["localidade"] . "' readonly>";
+                                        echo "<input type='text' id='localidade_" . $id_vaga . "' name='localidade' value='" . $row["localidade"] . "' readonly>";
                                     echo "</div>";
                                     echo "<div class='quantidade_vagas'>";
                                         echo "<i class='fa-solid fa-users'></i>";
-                                        echo "<input type='text' id='quantidade_vagas_" . $row["id"] . "' name='quantidade_vagas' value='" . $row["quantidade_vagas"] . "' readonly>";
+                                        echo "<input type='text' id='quantidade_vagas_" . $id_vaga . "' name='quantidade_vagas' value='" . $row["quantidade_vagas"] . "' readonly>";
                                     echo "</div>";
                                     echo "<div class='disponivel'>";
                                         echo "<i class='fa-solid fa-circle-exclamation'></i>";
-                                        echo "<input type='text' id='disponivel_" . $row["id"] . "' name='disponivel' value='" . $row["disponivel"] . "' readonly>";
+                                        echo "<input type='text' id='disponivel_" . $id_vaga . "' name='disponivel' value='" . $row["disponivel"] . "' readonly>";
                                     echo "</div>";
                                 echo "</div>";
 
                                 echo "<div class='t_e_ch'>";
-                                    echo "<div class='tipo'>"; 
+                                    echo "<div class='tipo'>";
                                         echo "<i class='fa-solid fa-file-contract'></i>";
-                                        echo "<input type='text' id='tipo_" . $row["id"] . "' name='tipo' value='" . $row["tipo"] . "' readonly>";
+                                        echo "<input type='text' id='tipo_" . $id_vaga . "' name='tipo' value='" . $row["tipo"] . "' readonly>";
                                     echo "</div>";
                                     echo "<div class='escolaridade'>";
                                         echo "<i class='fa-solid fa-graduation-cap'></i>";
-                                        echo "<input type='text' id='escolaridade_" . $row["id"] . "' name='escolaridade' value='" . $row["escolaridade"] . "' readonly>";
+                                        echo "<input type='text' id='escolaridade_" . $id_vaga . "' name='escolaridade' value='" . $row["escolaridade"] . "' readonly>";
                                     echo "</div>";
                                     echo "<div class='carga_horaria'>";
                                         echo "<i class='fa-solid fa-clock'></i>";
-                                        echo "<input type='text' id='carga_horaria_" . $row["id"] . "' name='carga_horaria' value='" . $row["carga_horaria"] . "' readonly>";
+                                        echo "<input type='text' id='carga_horaria_" . $id_vaga . "' name='carga_horaria' value='" . $row["carga_horaria"] . "' readonly>";
                                     echo "</div>";
                                 echo "</div>";
-                                                       
+
                                 echo "<div class='descricao_vaga'>";
-                                    echo "<textarea id='descricao_vaga_" . $row["id"] . "' name='descricao_vaga' readonly>" . $row["descricao_vaga"] . "</textarea>";
+                                    echo "<textarea id='descricao_vaga_" . $id_vaga . "' name='descricao_vaga' readonly>" . $row["descricao_vaga"] . "</textarea>";
                                 echo "</div>";
-  
+
                                 echo "<div class='botao_candidatar'>";
-                                        echo "<input type='hidden' name='id' value='" . $row["id"] . "'>";
-                                        echo "<button type='submit' class='candidatar'>Candidatar-se a vaga</button>";  
-                                echo "</div>";   
+                                    // Altera o botão com base na inscrição
+                                    if ($result_inscrito->num_rows > 0) {
+                                        echo "<button type='button' class='inscrito' disabled>Inscrito na vaga</button>";
+                                    } else {
+                                        echo "<button type='button' class='candidatar' onclick='candidatarVaga($id_vaga, $id_usuario, this)'>Candidatar-se a vaga</button>";
+                                    }
+                                echo "</div>";
                             echo "</form>";
-                        echo "</div>";          
+                        echo "</div>";
                     }
                 } else {
                     echo "Nenhuma vaga encontrada.";
@@ -1004,7 +1026,7 @@ a {
             </div>   
             <ul class="lista_footer">
                 <li>
-                    <a href="#" class="footer_link">Sobre a empresa</a>
+                    <a href="#" class="footer_link">Desenvolvedores</a>
                 </li>
             </ul>
             <ul class="lista_footer">
@@ -1022,5 +1044,31 @@ a {
             &#169 2024 Emprega mais
         </div>
     </footer><!-- Fim rodapé -->
+
+    <script>
+function candidatarVaga(id_vaga, id_usuario, botao) {
+    // Cria um objeto XMLHttpRequest
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'li_candidatar.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+    // Função chamada quando a requisição for completada
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            // Caso a requisição tenha sucesso, desabilitar o botão
+            botao.disabled = true;
+            botao.innerText = 'Inscrito na vaga';
+            botao.className = 'inscrito';  // Altera a classe para estilizar
+        } else {
+            alert('Erro ao candidatar-se à vaga. Tente novamente.');
+        }
+    };
+
+    // Envia a requisição com os dados da vaga e do usuário
+    var params = 'id_vaga=' + id_vaga + '&id_usuario=' + id_usuario;
+    xhr.send(params);
+}
+</script>
+
 </body>
 </html>

@@ -186,6 +186,35 @@ thead {
     background-color: #37B944; /* Cor de fundo dos botões ao passar o mouse */
     color: #FFE500;
 }
+
+.voltar{
+    justify-content: center;
+    align-items: flex-start;
+    width: 52.5%;
+    margin-top: 20px; 
+}
+.voltar:hover{
+    
+}
+
+.voltar a i {
+    margin-right: 10px; 
+}
+
+.voltar_btn {
+    color: #35383F; /* Cor padrão do botão */
+    text-decoration: none; /* Remove o sublinhado */
+    font-weight: 500;
+    font-size: 25px;
+    padding: 10px 13px;
+}
+
+.voltar_btn:hover {
+    color: #35383F;
+    text-decoration: none; /* Remove o sublinhado */
+    background-color: #f1f1f138;
+    border-radius: 8.89px;
+}
 </style>
 
 </head>
@@ -203,52 +232,47 @@ $id_vaga = isset($_GET['id']) ? $_GET['id'] : '';
 
 if (!empty($id_vaga)) {
     // Busca as informações da vaga com base no ID
-    $sql_vaga = "SELECT id, nome, empresa FROM vagas WHERE id = $id_vaga";
-    $result_vaga = $conn->query($sql_vaga);
+    $sql_vaga = "SELECT id, nome, empresa FROM vagas WHERE id = ?";
+    $stmt = $conn->prepare($sql_vaga);
+    $stmt->bind_param("i", $id_vaga);
+    $stmt->execute();
+    $result_vaga = $stmt->get_result();
 
     if ($result_vaga->num_rows > 0) {
         $vaga = $result_vaga->fetch_assoc();
         echo "<div class='infos'>";
-            echo "<p class='vaga-id'>ID da vaga: " . $vaga['id'] . "</p>";
-            echo "<p class='nome-id'>Vaga: " . $vaga['nome'] . "</h3>";  
-            echo "<p class='empresa-id'>Empresa: " . $vaga['empresa'] . "</p>";
+            echo "<p class='vaga-id'>ID da vaga: " . htmlspecialchars($vaga['id']) . "</p>";
+            echo "<p class='nome-id'>Vaga: " . htmlspecialchars($vaga['nome']) . "</p>";  
+            echo "<p class='empresa-id'>Empresa: " . htmlspecialchars($vaga['empresa']) . "</p>";
         echo "</div>";
-         
     } else {
-        echo "Vaga não encontrada.";
+        echo "<p>Vaga não encontrada.</p>"; // Mensagem clara se a vaga não for encontrada
     }
+    $stmt->close();
 }
 ?>
 
-<!-- Inicio Caixa de pesquisa -->
+<!-- Caixa de pesquisa -->
 <form method="GET" action="">
-            
+    <input type="hidden" name="id" value="<?php echo htmlspecialchars($id_vaga); ?>">
     <div class="caixa_pesquisar">
         <i class="fa fa-search"></i>
         <input class="input_pesquisar" type="text" placeholder="Pesquisar" name="pesquisar" id="pesquisar">        
     </div>           
-                        
     <div class="botao_buscar">
         <button type="submit">Buscar</button>
     </div>
-            
 </form>
-<!-- Fim Caixa de pesquisa -->
 
 
+<!-- Tabela de usuários -->
 <?php
-// Conexão com o banco de dados
-$conn = mysqli_connect("localhost", "root", "12345", "projeto_site");
-if ($conn->connect_error) {
-    die("Connection failed:" . $conn->connect_error);
-}
-
+// Tabela de candidatos
+$candidatos_table_name = "vaga_" . $id_vaga . "_" . preg_replace('/[^a-zA-Z0-9_]/', '', str_replace(' ', '_', $vaga['nome']));
 
 // Verifica se o parâmetro de pesquisa foi enviado
 $pesquisa = isset($_GET['pesquisar']) ? $_GET['pesquisar'] : '';
-
-// Monta a query de seleção com base no campo de pesquisa
-$sql = "SELECT id, nome_completo, cpf, data_nascimento, genero FROM usuarios";
+$sql = "SELECT id_usuario, nome_completo, cpf, data_nascimento, genero FROM $candidatos_table_name";
 if (!empty($pesquisa)) {
     // Adiciona a cláusula WHERE para buscar em nome_completo, cpf, data_nascimento ou genero
     $sql .= " WHERE nome_completo LIKE '%$pesquisa%' 
@@ -259,47 +283,49 @@ if (!empty($pesquisa)) {
 
 $result = $conn->query($sql);
 
+if ($result && $result->num_rows > 0) {
+    echo '<table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">NOME COMPLETO</th>
+                    <th scope="col">CPF</th>
+                    <th scope="col">DATA DE NASCIMENTO</th>
+                    <th scope="col">GÊNERO</th>
+                    <th scope="col">AÇÕES</th>
+                </tr>
+            </thead>
+            <tbody>';
     
-if ($result->num_rows > 0) {
-    
-        echo '<table class="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">NOME COMPLETO</th>
-                        <th scope="col">CPF</th>
-                        <th scope="col">DATA DE NASCIMENTO</th>
-                        <th scope="col">GÊNERO</th>
-                        <th scope="col">AÇÕES</th>
-                    </tr>
-                </thead>
-                <tbody>';
-        
-        $index = 1; // Contador para a numeração das linhas
-        while ($row = $result->fetch_assoc()) {
-            echo '<tr>
-                    <th scope="row">' . $index . '</th>
-                    <td>' . $row['nome_completo'] . '</td>
-                    <td>' . $row['cpf'] . '</td>
-                    <td>' . $row['data_nascimento'] . '</td>
-                    <td>' . $row['genero'] . '</td>
-                    <td>
-                        <!-- Botão de Visualizar -->
-                        <a href="visualizar.php?id=' . $row['id'] . '" class="btn visualizar" role="button">Visualizar</a>
-                    </td>
-                </tr>';
-            $index++; // Incrementa o contador
-        }
-        
-        echo '</tbody></table>';
-        
-    } else {
-        echo "0 results";
+    $index = 1; // Contador para a numeração das linhas
+    while ($row = $result->fetch_assoc()) {
+        echo '<tr>
+                <th scope="row">' . $index . '</th>
+                <td>' . htmlspecialchars($row['nome_completo']) . '</td>
+                <td>' . htmlspecialchars($row['cpf']) . '</td>
+                <td>' . htmlspecialchars($row['data_nascimento']) . '</td>
+                <td>' . htmlspecialchars($row['genero']) . '</td>
+                <td>
+                    <!-- Botão de Visualizar -->
+                    <a href="visualizar.php?id=' . htmlspecialchars($row['id_usuario']) . '" class="btn visualizar" role="button">Visualizar</a>
+                </td>
+            </tr>';
+        $index++; // Incrementa o contador
     }
     
+    echo '</tbody></table>';
+
+    // Botão de Voltar
+    echo '<div class="voltar">
+            <a href="../candidates/candidatos.php" class="voltar_btn">
+                <i class="fa-regular fa-circle-left"></i> Voltar
+            </a>
+        </div>';
+} else {
+    echo "<p>0 resultados.</p>";
+}
 
 $conn->close();
-
 ?>
 
 </body>

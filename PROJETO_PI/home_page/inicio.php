@@ -98,7 +98,8 @@ header nav ul {
     margin-left: 12px;
     font-size: 20px; 
     border-radius: 8.89px; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.397); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 
+                0 6px 20px rgba(0, 0, 0, 0.1);
     cursor: pointer;
 }
 
@@ -233,7 +234,8 @@ main {
     border-radius: 15px;
     box-sizing: border-box;
     margin: 0 auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.541);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 
+                0 6px 20px rgba(0, 0, 0, 0.1);
 
 }
 
@@ -401,7 +403,8 @@ i {
 .container_vagas .white-box {
     background-color: #ffffff;
     border-radius: 15px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.541);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 
+    0 6px 20px rgba(0, 0, 0, 0.1);
     width: 500px;
     height: 355px;
     display: flex;
@@ -411,6 +414,11 @@ i {
     padding: 20px; /* Espaço entre o topo do contêiner e o conteúdo */
     margin-top: 30px;
     margin-bottom: 30px;
+    transition: transform 0.3s ease;
+}
+
+.container_vagas .white-box:hover {
+    transform: scale(1.02); /* Aumenta o botão em 10% ao passar o mouse */
 }
 
 input, textarea {
@@ -888,7 +896,7 @@ a {
             </div>   
             <ul class="lista_footer">
                 <li>
-                    <a href="#" class="footer_link">Sobre a empresa</a>
+                    <a href="#" class="footer_link">Desenvolvedores</a>
                 </li>
             </ul>
             <ul class="lista_footer">

@@ -39,8 +39,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // Prepara a instrução SQL para evitar SQL injection
-        $stmt = $conexao->prepare("INSERT INTO usuarios (nome_completo, cpf, senha, telefone, data_nascimento, genero, caminho_curriculo, experiencia_antecessora) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssssss", $nome_completo, $cpf, $senha, $telefone, $data_nascimento, $genero, $caminhoArquivo, $experiencia_antecessora);
+        $stmt = $conexao->prepare("INSERT INTO usuarios (nome_completo, cpf, senha, telefone, data_nascimento, genero, caminho_curriculo, experiencia_antecessora, pergunta1, pergunta2, pergunta3, pergunta4) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssssssssss", $nome_completo, $cpf, $senha, $telefone, $data_nascimento, $genero, $caminhoArquivo, $experiencia_antecessora, $pergunta1, $pergunta2, $pergunta3, $pergunta4);
 
         // Define os valores dos parâmetros
         $nome_completo = $_POST['nomecompleto'];
@@ -49,6 +49,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $data_nascimento = date('Y-m-d', strtotime(str_replace('/', '-', $_POST['datanascimento'])));
         $genero = $_POST['genero'];
         $experiencia_antecessora = $_POST['experiencia'];
+        $pergunta1 = $_POST['pergunta1']; // 1 - Qual foi o nome da sua primeira escola? 
+        $pergunta2 = $_POST['pergunta2']; // 2 - Qual era o nome do seu primeiro animal de estimação? 
+        $pergunta3 = $_POST['pergunta3']; // 3- Qual é o nome do seu filme favorito? 
+        $pergunta4 = $_POST['pergunta4']; // 4 - Qual é o nome do seu melhor amigo de infância? 
+
 
         // Executa a instrução SQL
         if ($stmt->execute()) {

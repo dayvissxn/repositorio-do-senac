@@ -32,25 +32,22 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-    height: 100vh; /* Altura da tela inteira */
     font-family: "Ubuntu", sans-serif;
     font-weight: 500;
 }
 
 .interface{
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     background-color: #ffffff;
-    padding: 20px; /* Reduzi o padding para melhor visualização */
+    /* Reduzi o padding para melhor visualização */
     border-radius: 35.56px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 
                 0 6px 20px rgba(0, 0, 0, 0.1);
-    width: 80%; /* Ajustei a largura para 80% da tela */
-    max-width: 700px;
-    margin: auto; /* Centraliza horizontalmente */
+    width: 650px;
+    height: 1050px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 /* Elementos com o ID "titulo" */
@@ -59,7 +56,8 @@ body{
     font-weight: 700;
     text-align: center;
     color: #35383F;
-    font-size: 36px; /* Ajuste o tamanho da fonte conforme necessário */
+    font-size: 36px; /* Ajuste o tamanho da fonte conforme necessário */   
+    margin-top: 24px;
     margin-bottom: 20px; /* Adiciona espaço abaixo do título */
 } 
 
@@ -127,6 +125,23 @@ textarea {
     border-radius: 8.89px;
     font-size: 14px;
     font-family: 'Ubuntu', sans-serif;
+}
+
+.pergunta_texto{
+    margin-top: 30px;
+    margin-left: 45px;
+    margin-bottom: 30px;
+    text-align: center;
+    width: 85%;
+    font-weight: 500;
+    color: rgb(255, 0, 0);
+    border-top: 1px solid rgba(255, 0, 0, 0.534);
+    padding-top: 15px;
+    border-bottom: 1px solid rgba(255, 0, 0, 0.534);
+    padding-bottom: 15px;
+    font-size: 14px;
+    background-color: #EEEEEE;
+
 }
 
 /* Elemento de classe "botao" */
@@ -313,6 +328,33 @@ select{
                 <label for="experiencia">Experiências anteriores:<span class="asterisco">*</span></label>
                 <textarea name="experiencia" placeholder="(Caso já tenha anexado o currículo, digite algum caractere para prosseguir.)" id="experiencia" rows="10" cols="50" required></textarea>
             </div>
+
+
+            <!-- caixa de perguntas para recuperar a senha -->
+            <p class="pergunta_texto">Responda as perguntas e lembre-se de anotar suas respostas em um lugar seguro para que, caso esqueça sua senha, consiga alterá-la facilmente!</p>
+            <fieldset class="grupo">
+                <div class="campo">
+                    <label for="pergunta1">1 - Qual foi o nome da sua primeira escola? <span class="asterisco">*</span></label>
+                    <input type="text" placeholder="Resposta" name="pergunta1" id="pergunta1" required>
+                </div>
+
+                <div class="campo">
+                    <label for="pergunta2">2 - Qual era o nome do seu primeiro animal de estimação? <span class="asterisco">*</span></span></label>
+                    <input type="text" placeholder="Resposta" name="pergunta2" id="pergunta2" required>
+                </div>
+            </fieldset>
+            
+            <fieldset class="grupo">
+                <div class="campo">
+                    <label for="pergunta3">3- Qual é o nome do seu filme favorito? <span class="asterisco">*</span></label>
+                    <input type="text" placeholder="Resposta" name="pergunta3" id="pergunta3" required>
+                </div>
+
+                <div class="campo">
+                    <label for="pergunta4">4 - Qual é o nome do seu melhor amigo de infância? <span class="asterisco">*</span></span></label>
+                    <input type="text" placeholder="Resposta" name="pergunta4" id="pergunta4" required>
+                </div>
+            </fieldset> <!-- Fim Peguntas -->
 
             <!-- Botão para enviar o formulário -->
             <div class="botao">

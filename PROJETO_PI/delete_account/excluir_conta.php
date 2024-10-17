@@ -1,13 +1,13 @@
 <?php
     session_start();
     
-    if((!isset($_SESSION['id']) == true) and (!isset($_SESSION['nome_completo']) == true))
-    {
-        unset($_SESSION['id']);
+    if ((!isset($_SESSION['id_usuario']) == true) and (!isset($_SESSION['nome_completo']) == true)) {
+        unset($_SESSION['id_usuario']);
         unset($_SESSION['nome_completo']);
         header("Location: ../login/login.php");
-        exit(); // Adicionei exit para garantir que o código pare de ser executado após o redirecionamento
+        exit();
     }
+
 
     $logado = $_SESSION['nome_completo'];
     $primeiro_nome = explode(' ', $logado)[0]; // Pega a primeira parte do nome completo
@@ -304,11 +304,14 @@ p {
     border-radius: 10px;
     font-family: "Ubuntu", sans-serif;
     font-weight: 700;
+    font-size: 20px;
     position: relative;
     text-align: center;
     
 }
-
+p{
+    font-size: 20px;
+}
 /* Estilo para sucesso */
 .sucesso {
     border: 1px solid #c3e6cb;

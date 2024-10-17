@@ -3,7 +3,7 @@ session_start();
 include('ec_conexao.php'); // Certifique-se de que este arquivo contém a conexão com o banco de dados
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id_usuario = $_SESSION['id'];
+    $id_usuario = $_SESSION['id_usuario'];
     $senha_digitada = $_POST['senha'];
 
     // Query para buscar a senha e o CPF do usuário no banco de dados
