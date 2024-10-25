@@ -15,7 +15,7 @@ include('adp_conexao.php'); // Inclua a conexão com o banco de dados
 $id_usuario = $_SESSION['id_usuario'];
 
 // Query para buscar os dados do usuário no banco de dados
-$sql = "SELECT nome_completo, email, data_nascimento, genero, telefone FROM usuarios WHERE id = '$id_usuario'";
+$sql = "SELECT nome_completo, email, data_nascimento, genero, telefone, caminho_fotoperfil FROM usuarios WHERE id = '$id_usuario'";
 $result = mysqli_query($mysqli, $sql);
 
 if ($result && mysqli_num_rows($result) > 0) {
@@ -26,6 +26,7 @@ if ($result && mysqli_num_rows($result) > 0) {
     $data_nascimento = $dados_usuario['data_nascimento'];
     $genero = $dados_usuario['genero'];
     $telefone = $dados_usuario['telefone'];
+    $caminho_fotoperfil = $dados_usuario['caminho_fotoperfil'];
 } else {
     // Caso não encontre o usuário, redireciona para a página de login
     header("Location: ../login/login.php");
@@ -92,6 +93,18 @@ body {
     color: #35383F;/* Cor do ícone */
     margin-left: 4px;
  
+}
+
+.foto_nome_perfil img {
+    max-width: 50px; /* Define uma largura máxima */
+    min-width: 50px;
+    max-height: 50px; /* Define uma altura máxima */
+    min-height: 50px;
+    width: auto; /* Mantém a proporção da imagem */
+    height: auto; /* Mantém a proporção da imagem */
+    border-radius: 50%; /* Para fazer a imagem ficar circular */
+    margin-left: 4px;
+    border: 3px  solid #35383F;
 }
 
 .nome-usuario {
@@ -205,10 +218,18 @@ body {
     margin-bottom: 10px;
     
 }
+
 .foto_perfil img {
-    width: 100px;  /* Define a largura da imagem */
-    height: 100px; /* Define a altura da imagem */
+    max-width: 120px; /* Define uma largura máxima */
+    min-width: 120px;
+    max-height: 120px; /* Define uma altura máxima */
+    min-height: 120px;
+    width: auto; /* Mantém a proporção da imagem */
+    height: auto; /* Mantém a proporção da imagem */
+    border-radius: 50%; /* Para fazer a imagem ficar circular */
+    margin-top: -20px;
 }
+
 
 nav {
     display: flex;
@@ -321,7 +342,7 @@ nav ul {
     justify-content: center;
     align-items: center;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 30px;
 
 }
 
@@ -443,7 +464,12 @@ select{
         <div class="button-container">
 
             <div class="foto_nome_perfil">
-                <i class="fa-regular fa-circle-user"></i>
+                <?php if (isset($caminho_fotoperfil) && !empty($caminho_fotoperfil)): ?>
+                    <img src="<?php echo htmlspecialchars($caminho_fotoperfil); ?>" alt="Foto de Perfil">
+                <?php else: ?>
+                    <i class="fa-regular fa-circle-user"></i>
+                <?php endif; ?>
+                
                 <span class="nome-usuario"><?php echo htmlspecialchars($primeiro_nome); ?></span>
             </div>
 
@@ -461,27 +487,30 @@ select{
     </div>
     <div class="container_right">
         <div class="white-box">
-            <h1 id="titulo">Alterar dados pessoais</h1>
-            <br>
-            <form class="alterar_foto">
-                <div class="foto_perfil">
-                    <img src="img_change_personal_data/foto_perfil_btn.png" alt="foto_perfil">
-                </div><!-- foto -->
-                <div>
-                    <nav class="editar_foto">
-                        <ul>
-                            <li><a class="alterar" href="#">Alterar</a></li>
-                            <li><a class="remover" href="#">Remover</a></li>
-                        </ul>
-                    </nav>
-                </div>
-            </form>
+        <h1 id="titulo">Alterar dados pessoais</h1>
+        <br>
+
+        <!-- Formulário para upload de foto de perfil -->
+        <form id="formFotoPerfil" action="adp_atualizar_foto.php" method="post" enctype="multipart/form-data">
+            <div class="foto_perfil">
+                <img src="<?php echo htmlspecialchars($caminho_fotoperfil ?? 'img_change_personal_data/foto_perfil_btn.png'); ?>" alt="Foto de Perfil">
+            </div>
+            <input type="file" id="inputFoto" name="fotoPerfil" accept="image/*" style="display: none;">
+        </form>
+
+        <!-- Botões para alterar e remover foto -->
+        <nav class="editar_foto">
+            <ul>
+                <li><a class="alterar" href="#" onclick="document.getElementById('inputFoto').click();">Alterar</a></li>
+                <li><a class="remover" href="adp_remover_foto.php">Remover</a></li>
+            </ul>
+        </nav>
 
 
             <!-- Modal -->
             <?php if (isset($_SESSION['mensagem'])): ?>
                 <div id="modalMensagem" class="modal">
-                    <div class="modal-conteudo <?php echo $_SESSION['tipo_mensagem']; ?>">
+                    <div class="modal-conteudo <?php echo isset($_SESSION['tipo_mensagem']) ? $_SESSION['tipo_mensagem'] : ''; ?>">
                         <span class="fechar" id="fecharModal">&times;</span>
                         <p><?php echo $_SESSION['mensagem']; ?></p>
                     </div>
@@ -491,48 +520,48 @@ select{
                 unset($_SESSION['tipo_mensagem']);
                 ?>
             <?php endif; ?>
+            
+        <form class="dados" action="adp_edit.php" method="post">
+            <!-- Campos de Dados Pessoais -->
+            <div class="campo_nome">
+                <label for="nomecompleto">Nome completo</label>
+                <input type="text" name="nomecompleto" id="nomecompleto" value="<?php echo $nome_completo; ?>" required>
+            </div>
 
-            <form class="dados" action="adp_edit.php" method="post">
-                <div class="campo_nome">
-                    <label for="nomecompleto">Nome completo</label>
-                    <input type="text" name="nomecompleto" id="nomecompleto" value="<?php echo $nome_completo; ?>" required>
+            <div class="campo_email_data">
+                <div>
+                    <label for="email">E-mail</label>
+                    <input type="email" name="email" id="email" value="<?php echo $email; ?>">
                 </div>
 
-                <div class="campo_email_data">
-                    <div>
-                        <label for="email">E-mail</label>
-                        <input type="email" name="email" id="email" value="<?php echo $email; ?>">
-                    </div>
+                <div>
+                    <label for="datanascimento">Data de nascimento</label>
+                    <input type="text" placeholder="dd/mm/aaaa" name="datanascimento" id="datanascimento" value="<?php echo date('d/m/Y', strtotime($data_nascimento)); ?>" pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/(19|20)\d{2}$" title="Formato: dd/mm/aaaa" required>
+                </div>
+            </div>
 
-                    <div>
-                        <label for="datanascimento">Data de nascimento</label>
-                        <input type="text" placeholder="dd/mm/aaaa" name="datanascimento" id="datanascimento" value="<?php echo date('d/m/Y', strtotime($data_nascimento)); ?>" pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/(19|20)\d{2}$" title="Formato: dd/mm/aaaa" required>
-                    </div>
+            <div class="campo_genero_telefone">
+                <div>
+                    <label for="genero">Gênero</label>
+                    <select id="genero" name="genero" required>
+                        <option selected disabled value="">Selecione o gênero</option>
+                        <option value="Feminino" <?php echo ($genero == 'Feminino') ? 'selected' : ''; ?>>Feminino</option>
+                        <option value="Masculino" <?php echo ($genero == 'Masculino') ? 'selected' : ''; ?>>Masculino</option>
+                        <option value="Outro" <?php echo ($genero == 'Outro') ? 'selected' : ''; ?>>Outro</option>
+                    </select>
                 </div>
 
-                <div class="campo_genero_telefone">
-                    <div>
-                        <label for="genero">Gênero</label>
-                        <select id="genero" name="genero" required>
-                            <option selected disabled value="">Selecione o gênero</option>
-                            <option value="Feminino" <?php echo ($genero == 'Feminino') ? 'selected' : ''; ?>>Feminino</option>
-                            <option value="Masculino" <?php echo ($genero == 'Masculino') ? 'selected' : ''; ?>>Masculino</option>
-                            <option value="Outro" <?php echo ($genero == 'Outro') ? 'selected' : ''; ?>>Outro</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="telefone">Telefone</label>
-                        <input type="tel" placeholder="(99) 99999-9999" name="telefone" id="telefone" value="<?php echo $telefone; ?>" pattern="\(\d{2}\) \d{5}-\d{4}" title="Formato: (99) 99999-9999" required>
-                    </div>
+                <div>
+                    <label for="telefone">Telefone</label>
+                    <input type="tel" placeholder="(99) 99999-9999" name="telefone" id="telefone" value="<?php echo $telefone; ?>" pattern="\(\d{2}\) \d{5}-\d{4}" title="Formato: (99) 99999-9999" required>
                 </div>
+            </div>
 
-                <div class="botao_atualizar">
-                    <button type="submit">Atualizar</button>
-                </div>
-            </form>
-
-        </div>
+            <!-- Botão de Atualização -->
+            <div class="botao_atualizar">
+                <button type="submit">Atualizar</button>
+            </div>
+        </form>
     </div>
 
    
@@ -543,20 +572,27 @@ select{
         var modal = document.getElementById("modalMensagem");
         var fechar = document.getElementById("fecharModal");
 
-        modal.style.display = "block";
-
-        // Fechar o modal quando clicar no "X"
-        fechar.onclick = function() {
-            modal.style.display = "none";
+        if (modal) {
+            modal.style.display = "block";
         }
 
-        // Fechar o modal se o usuário clicar fora do modal
+        if (fechar) {
+            fechar.onclick = function() {
+                modal.style.display = "none";
+            }
+        }
+
         window.onclick = function(event) {
             if (event.target == modal) {
                 modal.style.display = "none";
             }
         }
     };
+
+    // Submeter automaticamente o formulário de foto ao selecionar uma nova imagem
+    document.getElementById('inputFoto').addEventListener('change', function() {
+        document.getElementById('formFotoPerfil').submit();
+    });
     </script>
 </body>
 </html>

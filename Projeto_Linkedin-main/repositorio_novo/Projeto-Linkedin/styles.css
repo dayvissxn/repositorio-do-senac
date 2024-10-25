@@ -1,0 +1,239 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Helvetica;
+}
+
+header { 
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 100px;
+    max-width: 1100px;
+    width: 100%; 
+    background-color: #ffffff;
+    margin: 0 auto; 
+}
+
+.logo button{
+    color: #1C66BF;
+    border: none;
+    background-color: transparent;
+    font-weight: 600;
+    font-size: 25px;
+}
+
+.logo i{
+    font-size: 25px;
+}
+
+.menu{
+    display: flex;
+    margin-left: 130px;
+}
+
+.campo{
+    margin-left: 40px;
+}
+
+button{
+    display: block;
+    border: none;
+    background-color: transparent;
+    color: #666666;
+    margin-top: 5px;
+    
+}
+.campo i{
+    font-size: 20px;
+    color: #666666;
+}
+
+.campo, .baixe{
+    text-align: center;
+
+}
+
+.baixe{
+    border-left: 1px solid #66666638;
+    border-right: 1px solid #66666638;
+    padding-left: 25px;
+    padding-right: 25px;
+}
+.baixe button{
+    display: block;
+    border: none;
+    background-color: transparent;
+    color: #666666;
+    
+}
+.baixe i{
+    font-size: 20px;
+    color: #666666;
+}
+
+
+a{
+    text-decoration: none;
+}
+.cadastre-se{
+    color: #4d4b4b;
+}
+
+.entrar{
+    padding: 18px;
+    width: 100px;
+    border: 1px solid #0a66c2;
+    border-radius: 30px;
+    color: #0a66c2;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+/* pablo */
+
+main .esquerda{
+    justify-content: center;
+    margin-right: 100px;
+}
+
+button.G{
+    display: block;
+    width: 400px;
+    height: 40px;
+    align-items: center;
+    background-color: #1A73E8;
+    border-radius: 18px;
+    border: none;
+    color: #FFFFFF;
+    font-weight: 600;
+}
+
+button.E{
+    display: block;
+    width: 400px;
+    height: 40px;
+    align-items: center;
+    background-color: #FFFFFF;
+    border-radius: 18px;
+    margin-top: 25px;
+    font-weight: 600;
+    border: 1px solid #4d4b4b;
+}
+
+a{
+    position: relative;
+    color: #0A66CD;
+    text-decoration: none;  
+}
+.texto1{
+    margin-top: 20px;
+    margin-left: 10px;
+}
+.texto{
+    display: flex;
+    margin-top: 20px;
+    margin-left: 40px;
+}
+.texto a{
+    margin-top: 10px;
+    margin-left: 5px;
+    font-weight: 600;
+}
+
+.texto a:hover{
+    border-bottom: 1px solid #0A66CD;
+    margin-top: 1px;
+}
+main{
+    display: flex;
+    max-width: 1100px;
+    width: 100%; 
+    margin: 0 auto;
+    margin-top: 60px;
+}
+main .esquerda h1{
+    color: #526A6E;
+    padding: 20px;
+    background-color: white;
+    font-size: 50px;
+    font-weight: 300;
+    margin-bottom: -0px;
+}
+
+.azul{
+    color: #0A66CD;
+}
+.azul:hover{
+    border-bottom: 1px solid #0A66CD;
+    margin-top: 1px;
+}
+
+p{
+    font-size: 11px;
+    color: #676767b2;
+}
+
+.ainda{
+    color: rgba(0, 0, 0, 0.89);
+    font-size: 13px;
+}
+
+/* Andressa */
+
+footer{
+    display: flex;
+    background-color: #f3f2f0;
+    max-width: 1300px;
+    width: 100%; 
+    margin: 0 auto; 
+    height: 500px;
+}
+
+footer .esquerda{
+    width: 50%; 
+    margin-top: 50px;
+}
+footer .direita{
+    margin-top: 60px;
+    display: flex;
+    width: 50%;
+}
+
+footer .esquerda h1{
+    color: black;
+    margin-left: 20px; 
+    font-size: 24px;
+    font-weight: 300;
+}
+footer .esquerda p{
+    color:black;
+    line-height: 1.5;
+    margin: 20px;
+    font-size: 15px;
+}
+
+footer .direita button{
+    
+    color:black;
+    border-radius: 40px;
+    padding: 15px;
+    width: 200px;
+    height: 60px;
+    font-size: 15px;
+    border: 1px solid black;
+    margin-left: 10px;
+
+}
+
+#exibir{
+    color: #0A66CD;
+    border : 1px solid #0A66CD;
+    border-radius: 18px; 
+    padding: 10px;
+    font-size: 15px;
+
+}
+
+

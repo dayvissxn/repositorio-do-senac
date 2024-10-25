@@ -883,13 +883,13 @@ a {
                     <img src="img_home_page/empregamaisfooter2.png" alt="logo">
                 </div>
                 <div class="social_media_footer">
-                    <a href="#" class="footer_link" id="location">
+                    <a href="https://maps.app.goo.gl/xKHmXhAcs7vcKfSS6" target="_blank" rel="noopener noreferrer" class="footer_link" id="location">
                         <i class="fa-solid fa-location-dot"></i>
                     </a>
-                    <a href="#" class="footer_link" id="facebook">
+                    <a href="https://www.facebook.com/profile.php?id=100069873004399" target="_blank" rel="noopener noreferrer" class="footer_link" id="facebook">
                         <i class="fa-brands fa-facebook-f"></i>
                     </a>
-                    <a href="#" class="footer_link" id="instagram">
+                    <a href="https://www.instagram.com/magazine_nossa_loja?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" class="footer_link" id="instagram">
                         <i class="fa-brands fa-instagram"></i>
                     </a>
                 </div>

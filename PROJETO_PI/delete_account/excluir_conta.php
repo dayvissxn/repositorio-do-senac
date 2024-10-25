@@ -11,9 +11,29 @@
 
     $logado = $_SESSION['nome_completo'];
     $primeiro_nome = explode(' ', $logado)[0]; // Pega a primeira parte do nome completo
+    $id_usuario = $_SESSION['id_usuario'];
 
+// Conectar ao banco de dados (use sua conexão existente)
+include('../login/conexao_login.php');
 
+// Query para buscar os dados do usuário no banco de dados
+$sql = "SELECT caminho_fotoperfil FROM usuarios WHERE id = ?";
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("i", $id_usuario);
+$stmt->execute();
+$result = $stmt->get_result();
 
+if ($result && $result->num_rows > 0) {
+    $dados_usuario = $result->fetch_assoc();
+    $caminho_fotoperfil = $dados_usuario['caminho_fotoperfil'];
+} else {
+    // Caso não encontre o usuário, redireciona para a página de login
+    header("Location: ../login/login.php");
+    exit();
+}
+
+// Fechar a declaração
+$stmt->close();
 ?>
 
 
@@ -76,6 +96,18 @@ body {
  
 }
 
+.foto_nome_perfil img {
+    max-width: 50px; /* Define uma largura máxima */
+    min-width: 50px;
+    max-height: 50px; /* Define uma altura máxima */
+    min-height: 50px;
+    width: auto; /* Mantém a proporção da imagem */
+    height: auto; /* Mantém a proporção da imagem */
+    border-radius: 50%; /* Para fazer a imagem ficar circular */
+    margin-left: 3px;
+    border: 3px  solid #35383F;
+}
+
 .nome-usuario {
     font-size: 28px; /* Tamanho da fonte do nome */
     font-weight: bold; /* Deixa o nome em negrito */
@@ -83,7 +115,6 @@ body {
     color: #35383F;
     margin-left: 24px;
 }
-
 
 
 /* Conteúdo do button-container */
@@ -371,7 +402,12 @@ p{
         <div class="button-container">
 
             <div class="foto_nome_perfil">
-                <i class="fa-regular fa-circle-user"></i>
+                <?php if (isset($caminho_fotoperfil) && !empty($caminho_fotoperfil)): ?>
+                    <img src="<?php echo htmlspecialchars($caminho_fotoperfil); ?>" alt="Foto de Perfil">
+                <?php else: ?>
+                    <i class="fa-regular fa-circle-user"></i>
+                <?php endif; ?>
+
                 <span class="nome-usuario"><?php echo htmlspecialchars($primeiro_nome); ?></span>
             </div>
 

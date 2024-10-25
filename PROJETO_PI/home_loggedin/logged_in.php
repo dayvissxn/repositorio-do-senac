@@ -9,7 +9,7 @@ if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['nome_completo'])) {
 
 $id_usuario = $_SESSION['id_usuario'];
 $nome_completo = $_SESSION['nome_completo'];
-$cpf = isset($_SESSION['cpf']) ? $_SESSION['cpf'] : '';  // Fallback para uma string vazia se não estiver definido
+$cpf = isset($_SESSION['cpf']) ? $_SESSION['cpf'] : '';
 $telefone = isset($_SESSION['telefone']) ? $_SESSION['telefone'] : '';
 $data_nascimento = isset($_SESSION['data_nascimento']) ? $_SESSION['data_nascimento'] : '';
 $genero = isset($_SESSION['genero']) ? $_SESSION['genero'] : '';
@@ -18,10 +18,23 @@ $experiencia_antecessora = isset($_SESSION['experiencia_antecessora']) ? $_SESSI
 $caminho_curriculo = isset($_SESSION['caminho_curriculo']) ? $_SESSION['caminho_curriculo'] : '';
 $caminho_fotoperfil = isset($_SESSION['caminho_fotoperfil']) ? $_SESSION['caminho_fotoperfil'] : '';
 
-// Conectar ao banco de dados
-$conn = mysqli_connect("localhost", "root", "12345", "projeto_site");
-if (!$conn) {
-    die("Erro ao conectar ao banco de dados: " . mysqli_connect_error());
+// Conectar ao banco de dados (use sua conexão existente)
+include('../login/conexao_login.php');
+
+// Query para buscar os dados do usuário no banco de dados
+$sql = "SELECT caminho_fotoperfil FROM usuarios WHERE id = ?";
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("i", $id_usuario);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result && $result->num_rows > 0) {
+    $dados_usuario = $result->fetch_assoc();
+    $caminho_fotoperfil = $dados_usuario['caminho_fotoperfil'];
+} else {
+    // Caso não encontre o usuário, redireciona para a página de login
+    header("Location: ../login/login.php");
+    exit();
 }
 
 // Verifica se o ID da vaga está definido
@@ -29,39 +42,48 @@ if (isset($_GET['id_vaga'])) {
     $id_vaga = $_GET['id_vaga'];
 
     // Gerar o nome da tabela da vaga
-    $sql_get_nome_vaga = "SELECT nome FROM vagas WHERE id = $id_vaga";
-    $result_nome_vaga = $conn->query($sql_get_nome_vaga);
-    $row_vaga = $result_nome_vaga->fetch_assoc();
-    $nome_vaga = $row_vaga['nome'];
+    $sql_get_nome_vaga = "SELECT nome FROM vagas WHERE id = ?";
+    $stmt_nome_vaga = $mysqli->prepare($sql_get_nome_vaga);
+    $stmt_nome_vaga->bind_param("i", $id_vaga);
+    $stmt_nome_vaga->execute();
+    $result_nome_vaga = $stmt_nome_vaga->get_result();
 
-    // Criar nome da tabela
-    $nome_tabela = "vaga_" . $id_vaga . "_" . preg_replace('/[^a-zA-Z0-9_]/', '', str_replace(' ', '_', $nome_vaga));
+    if ($result_nome_vaga->num_rows > 0) {
+        $row_vaga = $result_nome_vaga->fetch_assoc();
+        $nome_vaga = $row_vaga['nome'];
 
-    // Verifica se a tabela da vaga já existe
-    $sql_check_table = "CREATE TABLE IF NOT EXISTS $nome_tabela (
-        id INT(11) AUTO_INCREMENT PRIMARY KEY,
-        id_usuario INT NOT NULL,
-        nome_completo VARCHAR(100) NOT NULL,
-        cpf VARCHAR(14) NOT NULL,
-        telefone VARCHAR(15) NOT NULL,
-        data_nascimento TEXT NOT NULL,
-        genero VARCHAR(10) NOT NULL,
-        caminho_curriculo VARCHAR(255) DEFAULT NULL,
-        caminho_fotoperfil VARCHAR(255) DEFAULT NULL,
-        experiencia_antecessora TEXT NOT NULL,
-        email VARCHAR(100) DEFAULT NULL,
-        CONSTRAINT fk_usuario_$id_vaga FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE
-    )";
+        // Criar nome da tabela
+        $nome_tabela = "vaga_" . $id_vaga . "_" . preg_replace('/[^a-zA-Z0-9_]/', '', str_replace(' ', '_', $nome_vaga));
 
-    // Executa a criação da tabela
-    if ($conn->query($sql_check_table) !== TRUE) {
-        die("Erro ao criar tabela: " . $conn->error);
+        // Verifica se a tabela da vaga já existe
+        $sql_check_table = "CREATE TABLE IF NOT EXISTS $nome_tabela (
+            id INT(11) AUTO_INCREMENT PRIMARY KEY,
+            id_usuario INT NOT NULL,
+            nome_completo VARCHAR(100) NOT NULL,
+            cpf VARCHAR(14) NOT NULL,
+            telefone VARCHAR(15) NOT NULL,
+            data_nascimento TEXT NOT NULL,
+            genero VARCHAR(10) NOT NULL,
+            caminho_curriculo VARCHAR(255) DEFAULT NULL,
+            caminho_fotoperfil VARCHAR(255) DEFAULT NULL,
+            experiencia_antecessora TEXT NOT NULL,
+            email VARCHAR(100) DEFAULT NULL,
+            CONSTRAINT fk_usuario_$id_vaga FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE
+        )";
+
+        // Executa a criação da tabela
+        if ($mysqli->query($sql_check_table) !== TRUE) {
+            die("Erro ao criar tabela: " . $mysqli->error);
+        }
+    } else {
+        die("Erro: ID da vaga não encontrado.");
     }
-
+    $stmt_nome_vaga->close();
 }
 
-$conn->close();
+$mysqli->close();
 ?>
+
 
 
 
@@ -144,14 +166,11 @@ header nav ul {
 
 
 .vagas:hover {
-    opacity: 0.6;
-    
+    opacity: 0.6; 
 }
 
 .sobre_nos:hover {
-    opacity: 0.6;
-    
-    
+    opacity: 0.6; 
 }
 
 
@@ -170,8 +189,21 @@ header nav ul {
 }
 
 .dropbtn i {
-    color: #35383F;
+    color: #003079;
     font-size: 60px;
+   
+}
+
+.dropbtn img {
+    max-width: 60px; /* Define uma largura máxima */
+    min-width: 60px;
+    max-height: 60px; /* Define uma altura máxima */
+    min-height: 60px;
+    width: auto; /* Mantém a proporção da imagem */
+    height: auto; /* Mantém a proporção da imagem */
+    border-radius: 50%; /* Para fazer a imagem ficar circular */
+    border: 3px  solid #003079;
+
 }
 
 /* Conteúdo do dropdown */
@@ -849,7 +881,11 @@ a {
         </nav>
         <div class="dropdown">
             <button class="dropbtn">
-                <i class="fa-solid fa-circle-user"></i>
+                <?php if (isset($caminho_fotoperfil) && !empty($caminho_fotoperfil)): ?>
+                    <img src="<?php echo htmlspecialchars($caminho_fotoperfil); ?>" alt="Foto de Perfil">
+                <?php else: ?>
+                    <i class="fa-regular fa-circle-user"></i>
+                <?php endif; ?>
             </button>
             <div class="dropdown-content">
                 <a href="../change_personal_data/alterar_dados_pessoais.php"><i class="fa-solid fa-user"></i> Perfil</a>
@@ -1013,13 +1049,13 @@ a {
                     <img src="img_home_page/empregamaisfooter2.png" alt="logo">
                 </div>
                 <div class="social_media_footer">
-                    <a href="#" class="footer_link" id="location">
+                    <a href="https://maps.app.goo.gl/xKHmXhAcs7vcKfSS6" target="_blank" rel="noopener noreferrer" class="footer_link" id="location">
                         <i class="fa-solid fa-location-dot"></i>
                     </a>
-                    <a href="#" class="footer_link" id="facebook">
+                    <a href="https://www.facebook.com/profile.php?id=100069873004399" target="_blank" rel="noopener noreferrer" class="footer_link" id="facebook">
                         <i class="fa-brands fa-facebook-f"></i>
                     </a>
-                    <a href="#" class="footer_link" id="instagram">
+                    <a href="https://www.instagram.com/magazine_nossa_loja?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" class="footer_link" id="instagram">
                         <i class="fa-brands fa-instagram"></i>
                     </a>
                 </div>

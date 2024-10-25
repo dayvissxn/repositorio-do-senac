@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados do Formulário</title>
+</head>
+<body>
+    <h1>Dados Enviados</h1>
+    <table border="1">
+        <tr>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>Mensagem</th>
+            <th>Tema</th>
+        </tr>
+        <!--Loop para passar pelos dados presentes no banco-->
+        {% for contato in contatos %}
+        <tr>
+            <td>{{ contato[0] }}</td> <!--Campo referente ao nome-->
+            <td>{{ contato[1] }}</td> <!--Campo referente ao email-->
+            <td>{{ contato[2] }}</td> <!--Campo referente ao mensagem-->
+            <td>{{ contato[3] }}</td> <!--Campo referente ao tema-->
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{{url_for('index')}}">Voltar ao formulário</a>
+</body>
+</html>

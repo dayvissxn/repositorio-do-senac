@@ -1,16 +1,34 @@
 <?php
-    session_start();
-    
-    if((!isset($_SESSION['id']) == true) and (!isset($_SESSION['nome_completo']) == true))
-    {
-        unset($_SESSION['id']);
-        unset($_SESSION['nome_completo']);
-        header("Location: ../login/login.php");
-        exit(); // Adicionei exit para garantir que o código pare de ser executado após o redirecionamento
-    }
+session_start();
 
-    $logado = $_SESSION['nome_completo'];
-    $primeiro_nome = explode(' ', $logado)[0]; // Pega a primeira parte do nome completo
+// Verificação correta das variáveis de sessão
+if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['nome_completo'])) {
+    header("Location: ../login/login.php");
+    exit();
+}
+
+$logado = $_SESSION['nome_completo'];
+$primeiro_nome = explode(' ', $logado)[0]; // Pega a primeira parte do nome completo
+
+include('ac_conexao.php'); // Inclua a conexão com o banco de dados
+
+$id_usuario = $_SESSION['id_usuario'];
+
+// Query para buscar os dados do usuário no banco de dados
+$sql = "SELECT experiencia_antecessora, caminho_fotoperfil FROM usuarios WHERE id = '$id_usuario'";
+$result = mysqli_query($mysqli, $sql);
+
+if ($result && mysqli_num_rows($result) > 0) {
+    $dados_usuario = mysqli_fetch_assoc($result);
+    $experiencia_antecessora = $dados_usuario['experiencia_antecessora'];
+    $caminho_fotoperfil = $dados_usuario['caminho_fotoperfil'];
+} else {
+    // Caso não encontre o usuário, redireciona para a página de login
+    header("Location: ../login/login.php");
+    exit();
+}
+
+mysqli_close($mysqli);
 ?>
 
 
@@ -73,6 +91,18 @@ body {
  
 }
 
+.foto_nome_perfil img {
+    max-width: 50px; /* Define uma largura máxima */
+    min-width: 50px;
+    max-height: 50px; /* Define uma altura máxima */
+    min-height: 50px;
+    width: auto; /* Mantém a proporção da imagem */
+    height: auto; /* Mantém a proporção da imagem */
+    border-radius: 50%; /* Para fazer a imagem ficar circular */
+    margin-left: 3px;
+    border: 3px  solid #35383F;
+}
+
 .nome-usuario {
     font-size: 28px; /* Tamanho da fonte do nome */
     font-weight: bold; /* Deixa o nome em negrito */
@@ -80,8 +110,6 @@ body {
     color: #35383F;
     margin-left: 24px;
 }
-
-
 
 /* Conteúdo do button-container */
 .button-container {
@@ -281,56 +309,70 @@ textarea {
     }
 }
 
-        .erro {
-            color: red;
-            font-size: 0.9em;
-            margin-left: 0px;
-        }
 
-        /* Estilos para o modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
-        }
+/* Estilização do modal */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4); 
+   
+}
 
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 300px;
-            text-align: center;
-            border-radius: 10px;
-            font-family: "Ubuntu", sans-serif;
-            font-weight: 700;
-            position: relative; /* Adiciona position relative */
-        }
+.modal-conteudo {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 4px;
+    border: 1px solid #888;
+    width: 80%; 
+    margin-right: 535px;
+    max-width: 300px;
+    border-radius: 10px;
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 700;
+    position: relative;
+    text-align: center;
+    
+  
+}
 
-        .close {
-            color: #003079;
-            position: absolute;
-            top: 0;
-            right: 0;
-            font-size: 28px;
-            font-weight: bold;
-            padding: 10px;
-        }
+.sucesso {
+    border: 1px solid #c3e6cb;
+    background-color: #d4edda;
+    color: #155724;
+    font-weight: 700;
+    
+}
 
-        .close:hover,
-        .close:focus {
-            color: #FFE500;
-            text-decoration: none;
-            cursor: pointer;
-        }
+.erro {
+    border: 1px solid #f5c6cb;
+    background-color: #f8d7da;
+    color: #721c24;
+    font-weight: 700;
+}
+
+/* Estilização do botão fechar (X) */
+.fechar {
+    color: #003079;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.fechar:hover,
+.fechar:focus {
+    color: #FFE500;
+    text-decoration: none;
+    cursor: pointer;
+}
 
     </style>
 
@@ -341,7 +383,12 @@ textarea {
         <div class="button-container">
 
             <div class="foto_nome_perfil">
-                <i class="fa-regular fa-circle-user"></i>
+                <?php if (isset($caminho_fotoperfil) && !empty($caminho_fotoperfil)): ?>
+                    <img src="<?php echo htmlspecialchars($caminho_fotoperfil); ?>" alt="Foto de Perfil">
+                <?php else: ?>
+                    <i class="fa-regular fa-circle-user"></i>
+                <?php endif; ?>
+
                 <span class="nome-usuario"><?php echo htmlspecialchars($primeiro_nome); ?></span>
             </div>
 
@@ -361,14 +408,29 @@ textarea {
         <div class="white-box">
             <h1 id="titulo">Atualizar currículo</h1>
             <br>
-            <form>
+
+            <!-- Modal -->
+            <?php if (isset($_SESSION['mensagem'])): ?>
+                <div id="modalMensagem" class="modal">
+                    <div class="modal-conteudo <?php echo $_SESSION['tipo_mensagem']; ?>">
+                        <span class="fechar" id="fecharModal">&times;</span>
+                        <p><?php echo $_SESSION['mensagem']; ?></p>
+                    </div>
+                </div>
+                <?php
+                unset($_SESSION['mensagem']);
+                unset($_SESSION['tipo_mensagem']);
+                ?>
+            <?php endif; ?>
+
+            <form class="dados" action="ac_edit.php" method="post" enctype="multipart/form-data">
                 <div class="campo">
                     <label for="enviarcurriculo">Anexar currículo (PDF ou DOCX)</label>
                     <input type="file" name="enviarcurriculo" id="enviarcurriculo" accept=".pdf, .docx">
                 </div><!-- Fim currículo -->
                 <div class="campoexperiencia">
                     <label for="experiencia">Experiências anteriores:</label>
-                    <textarea name="experiencia" id="experiencia" rows="10" cols="50" required></textarea>
+                    <textarea name="experiencia" id="experiencia" rows="10" cols="50" required><?php echo htmlspecialchars($experiencia_antecessora); ?></textarea>
                 </div><!-- Fim experiencia -->
                 <div class="botao_atualizar">
                     <button type="submit">Atualizar</button>
@@ -383,5 +445,27 @@ textarea {
             <p id="modalMessage"></p>
         </div>
     </div>
+
+    <script>
+    // Mostrar o modal
+    window.onload = function() {
+        var modal = document.getElementById("modalMensagem");
+        var fechar = document.getElementById("fecharModal");
+
+        modal.style.display = "block";
+
+        // Fechar o modal quando clicar no "X"
+        fechar.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // Fechar o modal se o usuário clicar fora do modal
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    };
+    </script>
 </body>
 </html>

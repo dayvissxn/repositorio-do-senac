@@ -1,17 +1,84 @@
 <?php
-    session_start();
-    
-    if((!isset($_SESSION['id']) == true) and (!isset($_SESSION['nome_completo']) == true))
-    {
-        unset($_SESSION['id']);
-        unset($_SESSION['nome_completo']);
-        header("Location: ../login/login.php");
-        exit(); // Adicionei exit para garantir que o código pare de ser executado após o redirecionamento
-    }
+session_start();
 
-    $logado = $_SESSION['nome_completo'];
-    $primeiro_nome = explode(' ', $logado)[0]; // Pega a primeira parte do nome completo
+// Verifica se o usuário está logado
+if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['nome_completo'])) {
+    unset($_SESSION['id_usuario']);
+    unset($_SESSION['nome_completo']);
+    header("Location: ../login/login.php");
+    exit();
+}
+
+$logado = $_SESSION['nome_completo'];
+$primeiro_nome = explode(' ', $logado)[0];
+$id_usuario = $_SESSION['id_usuario'];
+
+// Conectar ao banco de dados (use sua conexão existente)
+include('../login/conexao_login.php');
+
+// Query para buscar os dados do usuário no banco de dados
+$sql = "SELECT caminho_fotoperfil FROM usuarios WHERE id = ?";
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("i", $id_usuario);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result && $result->num_rows > 0) {
+    $dados_usuario = $result->fetch_assoc();
+    $caminho_fotoperfil = $dados_usuario['caminho_fotoperfil'];
+} else {
+    // Caso não encontre o usuário, redireciona para a página de login
+    header("Location: ../login/login.php");
+    exit();
+}
+
+// Fechar a declaração
+$stmt->close();
+
+$error_message = '';
+
+// Verifica se o formulário foi enviado
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $senha_antiga = $_POST['senha'];
+    $nova_senha = $_POST['nova_senha'];
+    $confirmar_senha = $_POST['confirmarsenha'];
+
+    // Verificar se as senhas são iguais
+    if ($nova_senha !== $confirmar_senha) {
+        $error_message = "As novas senhas não coincidem.";
+    } else {
+        // Consulta para verificar a senha antiga no banco de dados
+        $sql_code = "SELECT senha FROM usuarios WHERE id = ?";
+        $stmt = $mysqli->prepare($sql_code);
+        $stmt->bind_param("i", $id_usuario);
+        $stmt->execute();
+        $stmt->bind_result($senha_atual);
+        $stmt->fetch();
+        $stmt->close();
+
+        // Verificar se a senha antiga está correta
+        if ($senha_antiga === $senha_atual) {
+            // Atualizar a nova senha no banco de dados
+            $sql_update = "UPDATE usuarios SET senha = ? WHERE id = ?";
+            $stmt_update = $mysqli->prepare($sql_update);
+            $stmt_update->bind_param("si", $nova_senha, $id_usuario);
+
+            if ($stmt_update->execute()) {
+                header("Location: alterar_senha.php?message=Senha alterada com sucesso!");
+                exit();
+            } else {
+                $error_message = "Erro ao atualizar a senha. Tente novamente.";
+            }
+
+            $stmt_update->close();
+        } else {
+            $error_message = "A senha antiga está incorreta.";
+        }
+    }
+}
+
 ?>
+
 
 
 <!doctype html>
@@ -68,8 +135,20 @@ body {
 .foto_nome_perfil i{
     font-size: 50px; /* Tamanho do ícone */
     color: #35383F;/* Cor do ícone */
-    margin-left: 4px;
+    margin-left: 3px;
  
+}
+
+.foto_nome_perfil img {
+    max-width: 50px; /* Define uma largura máxima */
+    min-width: 50px;
+    max-height: 50px; /* Define uma altura máxima */
+    min-height: 50px;
+    width: auto; /* Mantém a proporção da imagem */
+    height: auto; /* Mantém a proporção da imagem */
+    border-radius: 50%; /* Para fazer a imagem ficar circular */
+    margin-left: 3px;
+    border: 3px  solid #35383F;
 }
 
 .nome-usuario {
@@ -272,8 +351,8 @@ body {
 
 .erro {
     color: red;
-    font-size: 0.9em;
-    margin-left: 0px;
+    font-size: 0.5em;
+    margin-bottom: 5px;
 }
 
 /* Estilos para o modal */
@@ -291,10 +370,10 @@ body {
 }
 
 .modal-content {
-    background-color: #fefefe;
+    background-color: #d4edda;
     margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
+    padding: 4px;
+    border: 1px solid #c3e6cb;
     width: 80%;
     max-width: 300px;
     text-align: center;
@@ -302,6 +381,9 @@ body {
     font-family: "Ubuntu", sans-serif;
     font-weight: 700;
     position: relative; /* Adiciona position relative */
+    margin-right: 540px;
+    color: #155724;
+   
 }
 
 .close {
@@ -330,7 +412,12 @@ body {
         <div class="button-container">
 
             <div class="foto_nome_perfil">
-                <i class="fa-regular fa-circle-user"></i>
+                <?php if (isset($caminho_fotoperfil) && !empty($caminho_fotoperfil)): ?>
+                    <img src="<?php echo htmlspecialchars($caminho_fotoperfil); ?>" alt="Foto de Perfil">
+                <?php else: ?>
+                    <i class="fa-regular fa-circle-user"></i>
+                <?php endif; ?>
+
                 <span class="nome-usuario"><?php echo htmlspecialchars($primeiro_nome); ?></span>
             </div>
 
@@ -350,24 +437,26 @@ body {
         <div class="white-box">
             <h1 id="titulo">Alterar senha</h1>
             <br>
-            <form onsubmit="return validarSenhas()">
-                <div class="campo">
-                    <label for="senha">Senha antiga<span class="asterisco">*</span></label>
-                    <input type="password"  name="senha" id="senha" required>
-                </div>
-                <div class="campo">                        
-                    <label for="nova_senha">Nova senha<span class="asterisco">*</span></label>
-                    <input type="password"  name="nova_senha" id="nova_senha" required>
-                </div>
-                    <div class="campo">
-                    <label for="confirmarsenha">Confirme a senha<span class="asterisco">*</span><span id="mensagemErro" class="erro"></span></label>
-                    <input type="password" name="confirmarsenha" id="confirmarsenha" required>
-                </div> <!-- Fim Senhas -->
-                <div class="botao_atualizar">
-                    <button type="submit">Atualizar</button>
-                </div>
-            </form>
-        </div>
+            <form method="POST" action="alterar_senha.php" onsubmit="return validarSenhas()">
+            <div class="campo">
+                <label for="senha">Senha antiga<span class="asterisco">*</span></label>
+                <input type="password" name="senha" id="senha" required>
+            </div>
+            <div class="campo">                        
+                <label for="nova_senha">Nova senha<span class="asterisco">*</span></label>
+                <input type="password" name="nova_senha" id="nova_senha" required>
+            </div>
+            <div class="campo">
+                <label for="confirmarsenha">Confirme a senha<span class="asterisco">*</span>
+                    <span id="mensagemErro" class="erro"></span>
+                </label>
+                <input type="password" name="confirmarsenha" id="confirmarsenha" required>
+            </div>
+            <div class="botao_atualizar">
+                <button type="submit">Atualizar</button>
+            </div>
+        </form>
+    </div>
     </div>
     <!-- Modal para exibir mensagens -->
     <div id="myModal" class="modal">
