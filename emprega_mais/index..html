@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Adicionar Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <!-- Fim do código para Font Awesome -->
+
+    <title>Pagina inicial</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Cabeçalho -->
+    <header>
+        <img class="logo" src="images/empregamais.png" alt="logo">
+
+        <ul>
+            <a href="#">Vagas</a>
+            <a href="#">Sobre Nós</a>
+        </ul>
+
+        <div class="butoes_header">
+            <button class="login">Login</button>
+            <button class="cadastre-se">Cadastre-se</button>
+        </div>
+    </header>
+
+    <!-- Banner -->
+    <banner>
+        <img class="banner_img" src="images/banner_img.png" alt="banner">
+
+        <div class="banner_texto">
+            <h1>OPORTUNIDADE DE</h1>
+            <h2>EMPREGO</h2>
+        </div>
+    </banner>
+
+    <!-- Main -->
+    <main>
+        <form method="get" action="">
+            <div class="caixa_de_pesquisa">
+                <div class="pesquisar_vaga">
+                    <label for="vaga">Qual vaga você procura?</label>
+                    <div class="caixa_vaga">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text">
+                    </div>
+                </div>
+
+                <div class="pesquisar_filtros">
+                    <label for="filtros">Filtros</label>
+                    <div class="caixa_filtros">
+                        <i class="fa-solid fa-sliders"></i>
+                        <input type="text">
+                    </div>
+                </div>
+
+                <button class="buscar_vagas">Buscar vagas</button>
+            </div>
+        </form>
+    </main>
+</body>
+</html>
