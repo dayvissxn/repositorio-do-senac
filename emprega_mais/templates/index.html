@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Adicionar Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <!-- Fim do código para Font Awesome -->
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Pagina inicial</title>
+
+</head>
+<body>
+    <!-- Cabeçalho -->
+    <header>
+        <img class="logo" src="{{ url_for('static', filename='images/empregamais.png') }}" alt="logo">
+
+        
+        <a class="vagas_header" href="#">Vagas</a>
+        <a href="#">Sobre Nós</a>
+        
+
+        <div class="butoes_header">
+            <a class="login" href="{{ url_for('login') }}"><button>Login</button></a>
+            <button class="cadastre-se">Cadastre-se</button>
+        </div>
+    </header>
+
+    <!-- Banner -->
+    <banner>
+        <img class="banner_img" src="{{ url_for('static', filename='images/foto_banner.png') }}" alt="banner">
+    </banner>
+
+    <!-- Main -->
+    <main>
+        <div class="caixa_de_pesquisa">
+            
+                <div class="pesquisar_vaga">
+                    <label for="vaga">Qual vaga você procura?</label>
+                    <div class="caixa_vaga">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text">
+                    </div>
+                </div>
+
+                <div class="pesquisar_filtros">
+                    <label for="filtros">Filtros</label>
+                    <div class="caixa_filtros">
+                        <i class="fa-solid fa-sliders"></i>
+                        <input type="text">
+                    </div>
+                </div>
+
+                <button class="buscar_vagas">Buscar vagas</button>
+          
+        </div>
+        
+        <h1 class="titulo_vagas">Vagas</h1>
+            
+        <div class="vagas">
+
+            <form action=""></form> <!-- VAGA 1 -->
+                <div class="informacoes_vaga">
+                    <h1 class="nome_vaga">Analista de Atendimento</h1>
+                    <h2 class="nome_empresa">CLUB CASA ORGANIZACAO DE EVENTOS</h2>
+
+                    <div class="icons_vaga">
+                        <div class="localizacao_contrato">
+                            <i class="fa-solid fa-location-dot">Arapiraca - AL</i> 
+                            <i class="fa-solid fa-file-contract">CLT</i> 
+                        </div>
+
+                        <div class="usuarios_formacao">
+                            <i class="fa-solid fa-users">5 Vagas</i> 
+                            <i class="fa-solid fa-graduation-cap">Ensino Superior</i> 
+                        </div>
+
+                        <div class="usuarios_formacao">
+                            <i class="fa-solid fa-circle-info">Dísponivel até 13/08</i> 
+                            <i class="fa-solid fa-clock">8:20 Horas</i> 
+                        </div>
+                    </div>
+
+                    <p class="descricao_vaga">Responsável por garantir que o sistema de resgate de pontos funcione de maneira eficiente e que os clientes tenham uma experiência... <a class="ver_mais"> Ver mais detalhes</a></p>
+                
+                    <div class="botao">
+                        <button class="candidatar">Candidatar-se a vaga</button>
+                    </div>
+                </div>
+            </form>
+
+            <form action=""></form> <!-- VAGA 2 -->
+                <div class="informacoes_vaga">
+                    <h1 class="nome_vaga">Assistente Administrativo</h1>
+                    <h2 class="nome_empresa">MIND COACHING</h2>
+
+                    <div class="icons_vaga">
+                        <div class="localizacao_contrato">
+                            <i class="fa-solid fa-location-dot">Arapiraca - AL</i> 
+                            <i class="fa-solid fa-file-contract">CLT</i> 
+                        </div>
+
+                        <div class="usuarios_formacao">
+                            <i class="fa-solid fa-users">1 Vaga</i> 
+                            <i class="fa-solid fa-graduation-cap">Ensino Médio</i> 
+                        </div>
+
+                        <div class="disponivel_hora">
+                            <i class="fa-solid fa-circle-info">Dísponivel até 10/08</i> 
+                            <i class="fa-solid fa-clock">8 Horas</i> 
+                        </div>
+                    </div>
+
+                    <p class="descricao_vaga">Responsável por garantir que o sistema de resgate de pontos funcione de maneira eficiente e que os clientes tenham uma experiência... <a class="ver_mais"> Ver mais detalhes</a></p>
+                
+                    <div class="botao">
+                        <button class="candidatar">Candidatar-se a vaga</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <div class="rodape">
+            <div class="icons_footer">
+                <i class="fa-solid fa-location-dot"></i>
+                <i class="fa-brands fa-facebook-f"></i>
+                <i class="fa-brands fa-instagram"></i>
+            </div>
+
+            <a href="">Desenvolvedores</a>
+            <a href="">Perguntas e Respostas</a>
+            <a href="">Ajuda</a>
+        </div>
+    </footer>
+</body>
+</html>
