@@ -1,0 +1,51 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 700;
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-color:  #003079;
+
+}
+
+.login-container{
+    display: flex;
+    flex-direction: column;
+    background-color: #e5ff00;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+input{
+    border: none;
+    background-color: #EEEEEE;
+    padding: 5px;
+    margin-bottom: 15px;
+}
+
+label{
+    color: #003079;
+    
+    font-size: 20px;
+}
+h2{
+    text-align: center;
+    color: #003079;
+    font-weight: 900;
+}
+
+.entrar{
+    background-color: #003079;
+    color: #FFE500;
+    border: none;
+    font-size: 20px;
+    padding: 6px 65px;
+    margin-top: 5px;
+}
