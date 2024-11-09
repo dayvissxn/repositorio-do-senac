@@ -11,19 +11,19 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
     <title>Login</title>
 
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        h1 {
+            color: green;
+        }
+    </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Login</h2><br>
-        <form action="#" method="post">
-            <label for="nome">Usuário:</label><br>
-            <input type="text" id="nome" name="nome" required><br>
-            
-            <label for="senha">Senha:</label><br>
-            <input type="password" id="senha" name="senha" required><br>
-            
-            <input class="entrar" type="submit" value="Entrar">
-        </form>
-    </div>
+    <h1>Login efetuado com sucesso!</h1>
+    <p>Seja bem-vindo! Você agora pode acessar as funcionalidades do sistema.</p>
+    <a href="/index">Ir para a página inicial</a>
 </body>
 </html>
