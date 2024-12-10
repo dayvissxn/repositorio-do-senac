@@ -465,8 +465,8 @@ if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['cpf'])) {
                             echo "</div>";
 
                             echo "<div class='botao_cancelar'>";
-                                echo "<input type='hidden' name='id' value='" . $row["id"] . "'>"; // Mudar para 'id_vaga'
-                                echo "<button type='button' class='cancelar' onclick='return confirmarExclusao(this)'>Cancelar inscrição</button>";
+                                echo "<input type='hidden' name='id_vaga' value='" . $row["id"] . "'>"; 
+                                echo "<button type='submit' class='cancelar' onclick='return confirmarExclusao(this)'>Cancelar inscrição</button>";
                             echo "</div>";
                         echo "</form>";
                     echo "</div>";
